@@ -1,0 +1,5 @@
+__pycache__/
+pip-log.txt
+.idea/
+__init__.pyc
+*.pyc
