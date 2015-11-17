@@ -12,3 +12,9 @@ def index():
 def play_sound(file):
     subprocess.call("aplay ./audiospeech/sounds/" + file + ".wav", shell=True)
     return dict(status="OK")
+
+
+@route('/recognize')
+def speech_recognizer():
+    response = subprocess.check_output("./audiospeech/recognize_speech.sh", shell=True)
+    print("Answer: ", response)

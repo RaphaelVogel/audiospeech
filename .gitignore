@@ -3,3 +3,5 @@ pip-log.txt
 .idea/
 __init__.pyc
 *.pyc
+log.txt
+key.txt
