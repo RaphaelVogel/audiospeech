@@ -21,3 +21,4 @@ def speech_recognizer():
         '"https://www.google.com/speech-api/v2/recognize?output=json&lang=de-de&key=AIzaSyDkxrlx2acbRLILXVU9_UgnRqUXLcfRoWs" && '
         'rm file.flac  > /dev/null 2>&1', shell=True)
     print("Answer: ", response)
+    return dict(recognized=response)
