@@ -16,5 +16,8 @@ def play_sound(file):
 
 @route('/recognize')
 def speech_recognizer():
-    out = subprocess.check_output('. ./audiospeech/recognize_speech.sh', shell=True)
+    subprocess.call('. ./audiospeech/recognize_speech.sh', shell=True)
+    with open("./audiospeech/stt.txt") as f:
+        out = f.read()
+
     return dict(recognized=out)
