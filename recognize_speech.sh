@@ -10,3 +10,4 @@ wget -q -U "Mozilla/5.0" --post-file file.flac --header "Content-Type: audio/x-f
 cat stt.txt
 
 rm file.flac  > /dev/null 2>&1
+#
