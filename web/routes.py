@@ -16,9 +16,7 @@ def play_sound(file):
 
 @route('/recognize')
 def speech_recognizer():
-    response = subprocess.check_output('arecord -D plughw:0,0 -f cd -t wav -d 4 -q -r 16000 | flac - -s -f --best --sample-rate 16000 -o file.flac; && '
-        'wget -q -U "Mozilla/5.0" --post-file file.flac --header "Content-Type: audio/x-flac; rate=16000" -O - '
-        '"https://www.google.com/speech-api/v2/recognize?output=json&lang=de-de&key=AIzaSyDkxrlx2acbRLILXVU9_UgnRqUXLcfRoWs" && '
-        'rm file.flac  > /dev/null 2>&1', shell=True)
-    print("Answer: ", response)
-    return dict(recognized=response)
+    subprocess.call('. ./audiospeech/recognize_speech.sh', shell=True)
+    with open("stt.txt") as f:
+        resp = f.read()
+    return dict(recognized=resp)
