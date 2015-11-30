@@ -19,6 +19,8 @@ def speech_recognizer():
     subprocess.call('. ./audiospeech/recognize_speech.sh', shell=True)
     with open("./audiospeech/stt.txt") as f:
         out = f.read()
-    response = json.loads(out).split('\n', 1)[1]
-    text = json.loads(response)['result'][0]['alternative'][0]['transcript']
+    response = json.loads(out).split('\n', 1)
+    if len(response) <= 1:
+        return dict(text="Could not recognize")
+    text = json.loads(response[1])['result'][0]['alternative'][0]['transcript']
     return dict(text="text")
