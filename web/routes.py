@@ -1,5 +1,5 @@
 from bottle import route, static_file, request, HTTPResponse
-import random
+import json
 import subprocess
 
 
@@ -19,5 +19,6 @@ def speech_recognizer():
     subprocess.call('. ./audiospeech/recognize_speech.sh', shell=True)
     with open("./audiospeech/stt.txt") as f:
         out = f.read()
-
-    return dict(recognized=out)
+    response = json.loads(out).split('\n', 1)[1]
+    text = json.loads(response)['result'][0]['alternative'][0]['transcript']
+    return dict(text="text")
