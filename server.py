@@ -2,7 +2,7 @@
 import sys
 import logging
 from logging.handlers import RotatingFileHandler
-from bottle import run, TEMPLATE_PATH
+from bottle import run
 import web.routes 
 
 # logger configuration
