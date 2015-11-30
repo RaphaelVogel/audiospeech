@@ -22,11 +22,13 @@ def speech_recognizer():
     subprocess.call('. ./audiospeech/recognize_speech.sh', shell=True)
     with open("./audiospeech/stt.txt") as f:
         out = f.read()
-    logger.warn("Out Result -> " + out)
-    response = out.split('\n', 1)
-    logger.warn("Response length -> " + len(response))
-    if len(response) <= 1:
+
+    if out == '{"result":[]}':
         return dict(recognized_text="Could not recognize anything")
 
+    response = out.split('\n', 1)
+    if len(response) != 2:
+        return dict(recognized_text="Could not recognize anything")
+    
     text = json.loads(response[1])['result'][0]['alternative'][0]['transcript']
     return dict(recognized_text=text)
