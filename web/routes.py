@@ -23,13 +23,10 @@ def speech_recognizer():
     with open("./audiospeech/stt.txt") as f:
         out = f.read()
 
-    if out == '{"result":[]}' or out == '':
+    try:
+        response = out.split('\n', 1)
+        text = json.loads(response[1])['result'][0]['alternative'][0]['transcript']
+    except ValueError:
         return dict(recognized_text="Could not recognize anything")
 
-    response = out.split('\n', 1)
-    if len(response) != 2:
-        return dict(recognized_text="Could not recognize anything")
-
-    text = json.loads(response[1])['result'][0]['alternative'][0]['transcript']
-    logger.warn("Text -> " + text)
     return dict(recognized_text=text)
