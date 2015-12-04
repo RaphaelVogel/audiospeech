@@ -40,5 +40,7 @@ def say(text):
 
 
 def evaluate_text(text):
-    if 'Uhr' in text and 'zeig' in text:
+    if 'zeig' in text and 'Uhr' in text:
+        requests.get('http://192.168.1.18:8080/currentTime')
+    if 'zeig' in text and '' in text:
         requests.get('http://192.168.1.18:8080/currentTime')
