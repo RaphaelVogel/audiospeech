@@ -42,5 +42,7 @@ def say(text):
 def evaluate_text(text):
     if 'zeig' in text and 'Uhr' in text:
         requests.get('http://192.168.1.18:8080/currentTime')
-    if 'zeig' in text and '' in text:
-        requests.get('http://192.168.1.18:8080/currentTime')
+    if 'zeig' in text and 'Bundesliga' in text and 'Tabelle' in text:
+        requests.get('http://192.168.1.18:8080/soccerTable/1')
+    if 'zeig' in text and 'Bundesliga' in text and 'Tabelle' in text and 'zweite' in text:
+        requests.get('http://192.168.1.18:8080/soccerTable/2')
