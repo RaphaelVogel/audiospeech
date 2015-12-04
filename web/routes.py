@@ -55,7 +55,7 @@ def evaluate_text(text):
         requests.get('http://192.168.1.18:8080/soccerTable/1')
     elif ('zweiten' in text or '2' in text) and 'Bundesliga' in text and 'Tabelle' in text:
         requests.get('http://192.168.1.18:8080/soccerTable/2')
-    elif 'was sollen' in text and 'machen' in text:
+    elif ('was sollen' in text or 'was können' in text or 'was könnten' in text) and 'machen' in text:
         say(random.choice(was_machen))
     elif 'Solaranlage' in text:
         requests.get('http://192.168.1.18:8080/currentSolar')
