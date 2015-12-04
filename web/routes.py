@@ -1,5 +1,5 @@
-from bottle import route, static_file, request, HTTPResponse
-from threading import Thread
+from bottle import route, static_file
+import random
 import json
 import subprocess
 import logging
@@ -40,10 +40,20 @@ def say(text):
     subprocess.call('pico2wave --lang=de-DE --wave=/tmp/test.wav "' + text + '"; aplay /tmp/test.wav;rm /tmp/test.wav', shell=True)
 
 
+# ---- EVALUATION ------------------------------------------------------------------------------------------
 def evaluate_text(text):
+    was_machen = ['Wir könnten heute ins Freibad oder Hallenbad gehen',
+                  'Wir könnten heute Fahrrad fahren',
+                  'Wir könnten heute ins Kino gehen',
+                  'Wir könnten heute ganz viele Süßigkeiten essen',
+                  'Wir könnte heute Fussball spielen'
+                  'Wir könnten heute Playstation spielen'
+                  ]
     if 'zeig' in text and 'Uhr' in text:
         requests.get('http://192.168.1.18:8080/currentTime')
     if 'zeig' in text and 'Bundesliga' in text and 'Tabelle' in text:
         requests.get('http://192.168.1.18:8080/soccerTable/1')
     if 'zeig' in text and 'Bundesliga' in text and 'Tabelle' in text and 'zweite' in text:
         requests.get('http://192.168.1.18:8080/soccerTable/2')
+    if 'sollen' in text and 'heute machen' in text:
+        say(random.choice(was_machen))
