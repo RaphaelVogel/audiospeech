@@ -4,7 +4,9 @@ import json
 import subprocess
 import logging
 import requests
+import wit
 
+access_token = ""
 logger = logging.getLogger("audiospeech_logger")
 
 
@@ -21,19 +23,18 @@ def play_sound(file):
 
 @route('/recognize')
 def speech_recognizer():
+    wit.init()
     say("Ja?")
-    subprocess.call('. ./audiospeech/recognize_speech.sh', shell=True)
-    with open("./audiospeech/stt.txt") as f:
-        out = f.read()
+    response = wit.voice_query_auto(access_token)
+    wit.close()
     try:
-        response = out.split('\n', 1)
-        text = json.loads(response[1])['result'][0]['alternative'][0]['transcript']
-        evaluate_text(text)
+        intent = json.loads(response)
+        evaluate_intent(intent['outcomes'][0]['intent'])
     except ValueError:
         say("Entschuldigung, ich habe das nicht verstanden")
         return dict(recognized_text="Could not recognize anything")
 
-    return dict(recognized_text=text)
+    return dict(recognized_intent=intent)
 
 
 def say(text):
@@ -41,25 +42,19 @@ def say(text):
 
 
 # ---- EVALUATION ------------------------------------------------------------------------------------------
-def evaluate_text(text):
+def evaluate_intent(intent):
     was_machen = ['Wir könnten heute ins Freibad oder Hallenbad gehen',
                   'Wir könnten heute Fahrrad fahren',
                   'Wir könnten heute ins Kino gehen',
                   'Wir könnten heute ganz viele Süßigkeiten essen',
                   'Wir könnte heute Fussball spielen',
-                  'Wir könnten heute Playstation spielen'
-                  ]
-    if 'zeig' in text and 'Uhr' in text:
-        requests.get('http://192.168.1.18:8080/currentTime')
-    elif ('ersten' in text or '1' in text) and 'Bundesliga' in text and 'Tabelle' in text:
+                  'Wir könnten heute zocken']
+
+    if intent == 'erste_bundesliga':
         requests.get('http://192.168.1.18:8080/soccerTable/1')
-    elif ('zweiten' in text or '2' in text) and 'Bundesliga' in text and 'Tabelle' in text:
+    elif intent == 'zweite_bundesliga':
         requests.get('http://192.168.1.18:8080/soccerTable/2')
-    elif ('was sollen' in text or 'was können' in text or 'was könnten' in text) and 'machen' in text:
+    elif intent == 'was_machen':
         say(random.choice(was_machen))
-    elif 'Solaranlage' in text:
-        requests.get('http://192.168.1.18:8080/currentSolar')
-    elif 'Bild des Tages' in text:
-        requests.get('http://192.168.1.18:8080/picOfTheDay')
     else:
         say("Diesen Befehl kenne ich nicht")
