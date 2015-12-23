@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# coding: utf8
 from bottle import route, static_file
 import random
 import json
