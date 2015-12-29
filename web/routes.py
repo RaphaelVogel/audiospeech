@@ -6,10 +6,20 @@ import json
 import subprocess
 import logging
 import requests
+import time
 import wit
 
 access_token = ""
 logger = logging.getLogger("audiospeech_logger")
+
+was_machen = ['Wir könnten heute ins Freibad oder Hallenbad gehen',
+              'Wir könnten heute Fahrrad fahren',
+              'Wir könnten heute ins Kino gehen',
+              'Wir könnten heute ganz viele Süßigkeiten essen',
+              'Wir könnte heute Fussball spielen',
+              'Die Kinder sollten heute ihr Zimmer aufräumen',
+              'Die Kinder können jetzt Mathe und Deutsch üben',
+              'Wir könnten jetzt Fernsehen schauen']
 
 
 @route('/')
@@ -27,11 +37,14 @@ def play_sound(file):
 def speech_recognizer():
     wit.init()
     say("Ja?")
-    response = wit.voice_query_auto(access_token)
+    wit.voice_query_start(access_token)
+    time.sleep(3)
+    response = wit.voice_query_stop()
     wit.close()
     try:
         intent = json.loads(response)
-        evaluate_intent(intent['outcomes'][0]['intent'])
+        evaluate_intent(intent['outcomes'][0]['intent'], intent['outcomes'][0]['confidence'],
+                        intent['outcomes'][0]['entities'])
     except ValueError:
         say("Entschuldigung, ich habe das nicht verstanden")
         return dict(recognized_text="Could not recognize anything")
@@ -44,19 +57,28 @@ def say(text):
 
 
 # ---- EVALUATION ------------------------------------------------------------------------------------------
-def evaluate_intent(intent):
-    was_machen = ['Wir könnten heute ins Freibad oder Hallenbad gehen',
-                  'Wir könnten heute Fahrrad fahren',
-                  'Wir könnten heute ins Kino gehen',
-                  'Wir könnten heute ganz viele Süßigkeiten essen',
-                  'Wir könnte heute Fussball spielen',
-                  'Wir könnten heute zocken']
-
+def evaluate_intent(intent, confidence, entities):
+    global was_machen
+    entity_name = entities.keys()[0]
+    value = entities[entity_name][0]['value']
+    if float(confidence) < 0.6 or intent == "UNKNOWN":
+        say("Diesen Befehl kenne ich nicht")
+        return
     if intent == 'erste_bundesliga':
         requests.get('http://192.168.1.18:8080/soccerTable/1')
     elif intent == 'zweite_bundesliga':
         requests.get('http://192.168.1.18:8080/soccerTable/2')
     elif intent == 'was_machen':
         say(random.choice(was_machen))
+    elif intent == 'dein_name':
+        say("Ich bin Prinzessin Lea")
+    elif intent == "bild_des_tages":
+        requests.get('http://192.168.1.18:8080/picOfTheDay')
+    elif intent == 'reminder':
+        requests.get('http://192.168.1.18:8080/currentTime')
+        if value == "1":
+            say("Ok, Alarm in einer Minute")
+        else:
+            say("Ok, Alarm in " + value + " Minuten")
     else:
         say("Diesen Befehl kenne ich nicht")
