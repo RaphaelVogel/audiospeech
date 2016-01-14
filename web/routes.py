@@ -46,6 +46,7 @@ def speech_recognizer():
         evaluate_intent(intent['outcomes'][0]['intent'], intent['outcomes'][0]['confidence'],
                         intent['outcomes'][0]['entities'])
     except ValueError:
+        logger.error("Response: " + str(intent))
         say("Entschuldigung, ich habe das nicht verstanden")
         return dict(recognized_text="Could not recognize anything")
 
@@ -58,9 +59,9 @@ def say(text):
 
 # ---- EVALUATION ------------------------------------------------------------------------------------------
 def evaluate_intent(intent, confidence, entities):
-    global was_machen
-    entity_name = entities.keys()[0]
-    value = entities[entity_name][0]['value']
+    if entities:
+        entity_name = entities.keys()[0]
+        value = entities[entity_name][0]['value']
     if float(confidence) < 0.6 or intent == "UNKNOWN":
         say("Diesen Befehl kenne ich nicht")
         return
@@ -69,6 +70,7 @@ def evaluate_intent(intent, confidence, entities):
     elif intent == 'zweite_bundesliga':
         requests.get('http://192.168.1.18:8080/soccerTable/2')
     elif intent == 'was_machen':
+        global was_machen
         say(random.choice(was_machen))
     elif intent == 'dein_name':
         say("Ich bin Prinzessin Lea")
