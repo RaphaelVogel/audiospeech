@@ -50,12 +50,12 @@ def stop_radio():
 
 
 @route('/increaseVolume')
-def stop_radio():
+def increase_volume():
     subprocess.call("mpc volume +10", shell=True)
 
 
 @route('/decreaseVolume')
-def stop_radio():
+def decrease_volume():
     subprocess.call("mpc volume -10", shell=True)
 
 
