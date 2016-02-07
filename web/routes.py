@@ -61,6 +61,7 @@ def stop_radio():
 
 @route('/recognize')
 def speech_recognizer():
+    stop_radio()
     intent = None
     try:
         wit.init()
