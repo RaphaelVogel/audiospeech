@@ -21,6 +21,8 @@ was_machen = ['Wir könnten heute ins Freibad oder Hallenbad gehen',
               'Die Kinder können jetzt Mathe und Deutsch üben',
               'Wir könnten jetzt Fernsehen schauen']
 
+radio = 1
+
 
 @route('/')
 def index():
@@ -31,6 +33,30 @@ def index():
 def play_sound(file):
     subprocess.call("aplay ./audiospeech/sounds/" + file + ".wav", shell=True)
     return dict(status="OK")
+
+
+@route('/playRadio')
+def play_radio():
+    global radio
+    subprocess.call("mpc play " + str(radio), shell=True)
+    radio += 1
+    if radio > 4:
+        radio = 1
+
+
+@route('/stopRadio')
+def stop_radio():
+    subprocess.call("mpc stop", shell=True)
+
+
+@route('/increaseVolume')
+def stop_radio():
+    subprocess.call("mpc volume +10", shell=True)
+
+
+@route('/decreaseVolume')
+def stop_radio():
+    subprocess.call("mpc volume -10", shell=True)
 
 
 @route('/recognize')
@@ -45,8 +71,9 @@ def speech_recognizer():
         intent = json.loads(response)
         evaluate_intent(intent['outcomes'][0]['intent'], intent['outcomes'][0]['confidence'],
                         intent['outcomes'][0]['entities'])
-    except ValueError:
+    except Exception as e:
         logger.error("Response: " + str(intent))
+        logger.error("Got exception: " + str(e))
         say("Entschuldigung, ich habe das nicht verstanden")
         return dict(recognized_text="Could not recognize anything")
 
