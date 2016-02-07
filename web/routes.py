@@ -61,13 +61,14 @@ def stop_radio():
 
 @route('/recognize')
 def speech_recognizer():
-    wit.init()
-    say("Ja?")
-    wit.voice_query_start(access_token)
-    time.sleep(3)
-    response = wit.voice_query_stop()
-    wit.close()
+    intent = None
     try:
+        wit.init()
+        say("Ja?")
+        wit.voice_query_start(access_token)
+        time.sleep(3)
+        response = wit.voice_query_stop()
+        wit.close()
         intent = json.loads(response)
         evaluate_intent(intent['outcomes'][0]['intent'], intent['outcomes'][0]['confidence'],
                         intent['outcomes'][0]['entities'])
