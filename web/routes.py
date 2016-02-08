@@ -35,14 +35,17 @@ def play_sound(file):
     return dict(status="OK")
 
 
+# http://hr-mp3-m-h3.akacast.akamaistream.net/7/785/142133/v1/gnl.akacast.akamaistream.net/hr-mp3-m-h3
+# http://swr-mp3-m-swr3.akacast.akamaistream.net/7/720/137136/v1/gnl.akacast.akamaistream.net/swr-mp3-m-swr3
+# http://br_mp3-bayern3_m.akacast.akamaistream.net/7/442/142692/v1/gnl.akacast.akamaistream.net/br_mp3_bayern3_m
 @route('/playRadio')
 def play_radio():
     global radio
-    subprocess.call("mpc -q play " + str(radio), shell=True)
-    radio += 1
     if radio > 3:
         radio = 1
-    return dict(status="OK")
+    subprocess.call("mpc -q play " + str(radio), shell=True)
+    radio += 1
+    return dict(status="OK", playing=str(radio - 1))
 
 
 @route('/stopRadio')
