@@ -38,7 +38,7 @@ def play_sound(file):
 @route('/playRadio')
 def play_radio():
     global radio
-    subprocess.call("mpc play " + str(radio), shell=True)
+    subprocess.call("mpc -q play " + str(radio), shell=True)
     radio += 1
     if radio > 4:
         radio = 1
@@ -47,19 +47,19 @@ def play_radio():
 
 @route('/stopRadio')
 def stop_radio():
-    subprocess.call("mpc stop", shell=True)
+    subprocess.call("mpc -q stop", shell=True)
     return dict(status="OK")
 
 
 @route('/increaseVolume')
 def increase_volume():
-    subprocess.call("mpc volume +10", shell=True)
+    subprocess.call("mpc -q volume +10", shell=True)
     return dict(status="OK")
 
 
 @route('/decreaseVolume')
 def decrease_volume():
-    subprocess.call("mpc volume -10", shell=True)
+    subprocess.call("mpc -q volume -10", shell=True)
     return dict(status="OK")
 
 
