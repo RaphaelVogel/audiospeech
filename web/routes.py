@@ -42,21 +42,25 @@ def play_radio():
     radio += 1
     if radio > 4:
         radio = 1
+    return dict(status="OK")
 
 
 @route('/stopRadio')
 def stop_radio():
     subprocess.call("mpc stop", shell=True)
+    return dict(status="OK")
 
 
 @route('/increaseVolume')
 def increase_volume():
     subprocess.call("mpc volume +10", shell=True)
+    return dict(status="OK")
 
 
 @route('/decreaseVolume')
 def decrease_volume():
     subprocess.call("mpc volume -10", shell=True)
+    return dict(status="OK")
 
 
 @route('/recognize')
