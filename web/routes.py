@@ -40,7 +40,7 @@ def play_radio():
     global radio
     subprocess.call("mpc -q play " + str(radio), shell=True)
     radio += 1
-    if radio > 4:
+    if radio > 3:
         radio = 1
     return dict(status="OK")
 
