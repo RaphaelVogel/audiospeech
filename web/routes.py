@@ -58,7 +58,7 @@ def stop_radio():
 @route('/increaseVolume')
 def increase_volume():
     global volume
-    if volume != 100:
+    if volume < 100:
         subprocess.call("mpc -q volume +10", shell=True)
         volume += 10
     return dict(status="OK")
@@ -67,7 +67,7 @@ def increase_volume():
 @route('/decreaseVolume')
 def decrease_volume():
     global volume
-    if volume != 0:
+    if volume > 0:
         subprocess.call("mpc -q volume -10", shell=True)
         volume -= 10
     return dict(status="OK")
