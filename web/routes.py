@@ -22,6 +22,7 @@ was_machen = ['Wir könnten heute ins Freibad oder Hallenbad gehen',
               'Wir könnten jetzt Fernsehen schauen']
 
 radio = 1
+volume = 50
 
 
 @route('/')
@@ -56,13 +57,19 @@ def stop_radio():
 
 @route('/increaseVolume')
 def increase_volume():
-    subprocess.call("mpc -q volume +10", shell=True)
+    global volume
+    if volume != 100:
+        subprocess.call("mpc -q volume +10", shell=True)
+        volume += 10
     return dict(status="OK")
 
 
 @route('/decreaseVolume')
 def decrease_volume():
-    subprocess.call("mpc -q volume -10", shell=True)
+    global volume
+    if volume != 0:
+        subprocess.call("mpc -q volume -10", shell=True)
+        volume -= 10
     return dict(status="OK")
 
 
@@ -93,7 +100,6 @@ def say(text):
     subprocess.call('pico2wave --lang=de-DE --wave=/tmp/test.wav "' + text + '" && aplay /tmp/test.wav && rm /tmp/test.wav', shell=True)
 
 
-# ---- EVALUATION ------------------------------------------------------------------------------------------
 def evaluate_intent(intent, confidence, entities):
     logger.info("In evaluate_intent: %s  %s  %s", str(intent), str(confidence), str(entities))
     if entities:
