@@ -22,7 +22,6 @@ was_machen = ['Wir könnten heute ins Freibad oder Hallenbad gehen',
               'Wir könnten jetzt Fernsehen schauen']
 
 radio = 1
-volume = 50
 
 
 @route('/')
@@ -57,19 +56,13 @@ def stop_radio():
 
 @route('/increaseVolume')
 def increase_volume():
-    global volume
-    if volume < 100:
-        subprocess.call("mpc -q volume +10", shell=True)
-        volume += 10
+    subprocess.call("mpc -q volume +10", shell=True)
     return dict(status="OK")
 
 
 @route('/decreaseVolume')
 def decrease_volume():
-    global volume
-    if volume > 0:
-        subprocess.call("mpc -q volume -10", shell=True)
-        volume -= 10
+    subprocess.call("mpc -q volume -10", shell=True)
     return dict(status="OK")
 
 
