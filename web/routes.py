@@ -21,6 +21,7 @@ was_machen = ['Wir könnten heute ins Freibad oder Hallenbad gehen',
               'Die Kinder können jetzt Mathe und Deutsch üben',
               'Wir könnten jetzt Fernsehen schauen']
 
+
 radio = 1
 
 
@@ -31,17 +32,21 @@ def index():
 
 @route('/playsound/<file>')
 def play_sound(file):
-    subprocess.call("aplay ./audiospeech/sounds/" + file + ".wav", shell=True)
+    filename = "./audiospeech/sounds/" + file + ".wav"
+    subprocess.call(["aplay", filename])
     return dict(status="OK")
 
 
 # http://hr-mp3-m-h3.akacast.akamaistream.net/7/785/142133/v1/gnl.akacast.akamaistream.net/hr-mp3-m-h3
 # http://swr-mp3-m-swr3.akacast.akamaistream.net/7/720/137136/v1/gnl.akacast.akamaistream.net/swr-mp3-m-swr3
 # http://br_mp3-bayern3_m.akacast.akamaistream.net/7/442/142692/v1/gnl.akacast.akamaistream.net/br_mp3_bayern3_m
+# http://swr-mp3-m-swr2.akacast.akamaistream.net/7/721/137135/v1/gnl.akacast.akamaistream.net/swr-mp3-m-swr2
+# http://mp3.ffh.de/radioffh/hqlivestream.mp3
+# http://srv05.bigstreams.de/bigfm-mp3-96
 @route('/playRadio')
 def play_radio():
     global radio
-    if radio > 3:
+    if radio > 6:
         radio = 1
     subprocess.call("mpc -q play " + str(radio), shell=True)
     radio += 1
@@ -50,19 +55,19 @@ def play_radio():
 
 @route('/stopRadio')
 def stop_radio():
-    subprocess.call("mpc -q stop", shell=True)
+    subprocess.call(["mpc", "stop"])
     return dict(status="OK")
 
 
 @route('/increaseVolume')
 def increase_volume():
-    subprocess.call("mpc -q volume +10", shell=True)
+    subprocess.call(["mpc", "volume", "+10"])
     return dict(status="OK")
 
 
 @route('/decreaseVolume')
 def decrease_volume():
-    subprocess.call("mpc -q volume -10", shell=True)
+    subprocess.call(["mpc", "volume", "-10"])
     return dict(status="OK")
 
 
@@ -70,7 +75,6 @@ def decrease_volume():
 def speech_recognizer():
     logger.info("In speech_recognizer method")
     stop_radio()
-    intent = None
     try:
         wit.init()
         say("Ja?")
@@ -113,6 +117,12 @@ def evaluate_intent(intent, confidence, entities):
         say("Ich bin Prinzessin Lea")
     elif intent == "bild_des_tages":
         requests.get('http://192.168.1.18:8080/picOfTheDay')
+    elif intent == "radio_an":
+        play_radio()
+    elif intent == "radio_lauter":
+        increase_volume()
+    elif intent == "radio_leiser":
+        decrease_volume()
     else:
         logger.info("Intent %s is nor known", intent)
         say("Diesen Befehl kenne ich nicht")
