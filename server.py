@@ -20,7 +20,6 @@ logger.addHandler(filehandler)
 
 
 def reset_mpd():
-    logger.warn("Reset MPD")
     subprocess.call(["sudo", "service", "mpd", "restart"])
     Timer(10800.0, reset_mpd).start()  # 3h
 
