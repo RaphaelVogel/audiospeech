@@ -19,6 +19,7 @@ logger.addHandler(filehandler)
 
 
 if __name__ == '__main__':
+    subprocess.call(["amixer", "sset", "PCM,0", "50%"])
     if len(sys.argv) > 1 and sys.argv[1] == 'devmode':
         run(server='cherrypy', host='localhost', port=8080, debug=True, reloader=True)
     else:

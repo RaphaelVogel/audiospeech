@@ -4,7 +4,7 @@ pip-log.txt
 __init__.pyc
 *.pyc
 log.txt
-key.txt
+wit.key
 file.flac
 pico2wave.deb
 host

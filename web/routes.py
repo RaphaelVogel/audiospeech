@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# coding: utf8
 from bottle import route, static_file, HTTPResponse
 from access_modules import solar, weather
 import random
@@ -35,6 +33,7 @@ radio = 1
 
 @route('/playsound/<file>')
 def play_sound(file):
+    subprocess.call(["amixer", "sset", "PCM,0", "65%"])
     filename = "/home/pi/base/sounds/" + file + ".wav"
     subprocess.call(["aplay", filename])
     return dict(status="OK")
@@ -72,22 +71,7 @@ def decrease_volume():
 def speech_recognizer():
     logger.info("In speech_recognizer method")
     stop_radio()
-    try:
-        wit.init()
-        say("Ja?")
-        wit.voice_query_start(access_token)
-        time.sleep(3)
-        response = wit.voice_query_stop()
-        wit.close()
-        intent = json.loads(response)
-        evaluate_speech_intent(intent['outcomes'][0]['intent'], intent['outcomes'][0]['confidence'],
-                               intent['outcomes'][0]['entities'])
-    except Exception as e:
-        logger.error("Got exception: %s", str(e))
-        say("Entschuldigung, ich habe das nicht verstanden")
-        return dict(recognized_text="Could not recognize anything")
-
-    return dict(recognized_intent=intent)
+    return dict(recognized_intent="")
 
 
 # ----------------------------------------------------------------------------------------------
@@ -120,32 +104,5 @@ def say(text):
     subprocess.call(["amixer", "sset", "PCM,0", "50%"])
 
 
-def evaluate_speech_intent(intent, confidence, entities):
-    logger.info("In evaluate_intent: %s  %s  %s", str(intent), str(confidence), str(entities))
-    if entities:
-        entity_name = entities.keys()[0]
-        value = entities[entity_name][0]['value']
-    if float(confidence) < 0.6 or intent == "UNKNOWN":
-        logger.info("Confidence %s smaller than 0.6", confidence)
-        say("Diesen Befehl kenne ich nicht")
-        return
-    if intent == 'erste_bundesliga':
-        requests.get('http://192.168.1.18:8080/soccerTable/1')
-    elif intent == 'zweite_bundesliga':
-        requests.get('http://192.168.1.18:8080/soccerTable/2')
-    elif intent == 'was_machen':
-        global was_machen
-        say(random.choice(was_machen))
-    elif intent == 'dein_name':
-        say("Ich bin Prinzessin Lea")
-    elif intent == "bild_des_tages":
-        requests.get('http://192.168.1.18:8080/picOfTheDay')
-    elif intent == "radio_an":
-        play_radio()
-    elif intent == "radio_lauter":
-        increase_volume()
-    elif intent == "radio_leiser":
-        decrease_volume()
-    else:
-        logger.info("Intent %s is nor known", intent)
-        say("Diesen Befehl kenne ich nicht")
+def evaluate_speech_intent():
+    pass
