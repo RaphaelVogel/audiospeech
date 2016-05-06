@@ -1,12 +1,7 @@
 from bottle import route, static_file, HTTPResponse
 from access_modules import solar, weather
-import random
-import json
 import subprocess
 import logging
-import requests
-import time
-import wit
 
 
 @route('/')
@@ -17,17 +12,7 @@ def index():
 # ------------------------------------------------------------------------------------------
 # Sound, Radio and Speech Recognition API
 # ------------------------------------------------------------------------------------------
-access_token = ""
 logger = logging.getLogger("base_logger")
-
-was_machen = ['Wir könnten heute ins Freibad oder Hallenbad gehen',
-              'Wir könnten heute Fahrrad fahren',
-              'Wir könnten heute ins Kino gehen',
-              'Wir könnten heute ganz viele Süßigkeiten essen',
-              'Wir könnte heute Fussball spielen',
-              'Die Kinder sollten heute ihr Zimmer aufräumen',
-              'Die Kinder können jetzt Mathe und Deutsch üben',
-              'Wir könnten jetzt Fernsehen schauen']
 radio = 1
 
 
@@ -102,7 +87,3 @@ def say(text):
     subprocess.call(["amixer", "sset", "PCM,0", "75%"])
     subprocess.call('pico2wave --lang=de-DE --wave=/tmp/test.wav "' + text + '" && aplay /tmp/test.wav && rm /tmp/test.wav', shell=True)
     subprocess.call(["amixer", "sset", "PCM,0", "50%"])
-
-
-def evaluate_speech_intent():
-    pass
