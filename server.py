@@ -11,9 +11,9 @@ import subprocess
 
 
 # logger configuration
-logger = logging.getLogger("audiospeech_logger")
+logger = logging.getLogger("base_logger")
 logger.setLevel(logging.WARN)
-filehandler = RotatingFileHandler('./audiospeech/log.txt', maxBytes=100000, backupCount=2)
+filehandler = RotatingFileHandler('./base/log.txt', maxBytes=100000, backupCount=2)
 formatter = logging.Formatter('%(asctime)s : %(levelname)s : %(message)s', datefmt='%d-%m-%Y %H:%M:%S')
 filehandler.setFormatter(formatter)
 logger.addHandler(filehandler)

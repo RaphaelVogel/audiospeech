@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf8
-from bottle import route, static_file
+from bottle import route, static_file, HTTPResponse
+from access_modules import solar, weather
 import random
 import json
 import subprocess
@@ -9,8 +10,17 @@ import requests
 import time
 import wit
 
+
+@route('/')
+def index():
+    return static_file('index.html', root='./base/web')
+
+
+# ------------------------------------------------------------------------------------------
+# Sound, Radio and Speech Recognition API
+# ------------------------------------------------------------------------------------------
 access_token = ""
-logger = logging.getLogger("audiospeech_logger")
+logger = logging.getLogger("base_logger")
 
 was_machen = ['Wir könnten heute ins Freibad oder Hallenbad gehen',
               'Wir könnten heute Fahrrad fahren',
@@ -20,19 +30,12 @@ was_machen = ['Wir könnten heute ins Freibad oder Hallenbad gehen',
               'Die Kinder sollten heute ihr Zimmer aufräumen',
               'Die Kinder können jetzt Mathe und Deutsch üben',
               'Wir könnten jetzt Fernsehen schauen']
-
-
 radio = 1
-
-
-@route('/')
-def index():
-    return static_file('index.html', root='./audiospeech/web')
 
 
 @route('/playsound/<file>')
 def play_sound(file):
-    filename = "./audiospeech/sounds/" + file + ".wav"
+    filename = "./base/sounds/" + file + ".wav"
     subprocess.call(["aplay", filename])
     return dict(status="OK")
 
@@ -83,8 +86,8 @@ def speech_recognizer():
         response = wit.voice_query_stop()
         wit.close()
         intent = json.loads(response)
-        evaluate_intent(intent['outcomes'][0]['intent'], intent['outcomes'][0]['confidence'],
-                        intent['outcomes'][0]['entities'])
+        evaluate_speech_intent(intent['outcomes'][0]['intent'], intent['outcomes'][0]['confidence'],
+                               intent['outcomes'][0]['entities'])
     except Exception as e:
         logger.error("Got exception: %s", str(e))
         say("Entschuldigung, ich habe das nicht verstanden")
@@ -93,13 +96,37 @@ def speech_recognizer():
     return dict(recognized_intent=intent)
 
 
+# ----------------------------------------------------------------------------------------------
+# Solar and weather API
+# ----------------------------------------------------------------------------------------------
+@route('/solar/current')
+def current_solarproduction():
+    current_data = solar.read_data(False)  # returns a dictionary, will be transformed to JSON by bottle
+    if current_data:
+        return current_data
+    else:
+        return HTTPResponse(dict(error="Could not read solar production values"), status=500)
+
+
+@route('/weather/current')
+def current_weather():
+    current_data = weather.read_data(False)
+    if current_data:
+        return current_data
+    else:
+        return HTTPResponse(dict(error="Could not read weather data values"), status=500)
+
+
+# ----------------------------------------------------------------------------------------------
+# Functions
+# ----------------------------------------------------------------------------------------------
 def say(text):
     subprocess.call(["amixer", "sset", "PCM,0", "75%"])
     subprocess.call('pico2wave --lang=de-DE --wave=/tmp/test.wav "' + text + '" && aplay /tmp/test.wav && rm /tmp/test.wav', shell=True)
     subprocess.call(["amixer", "sset", "PCM,0", "50%"])
 
 
-def evaluate_intent(intent, confidence, entities):
+def evaluate_speech_intent(intent, confidence, entities):
     logger.info("In evaluate_intent: %s  %s  %s", str(intent), str(confidence), str(entities))
     if entities:
         entity_name = entities.keys()[0]
