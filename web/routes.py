@@ -13,7 +13,7 @@ import wit
 
 @route('/')
 def index():
-    return static_file('index.html', root='./base/web')
+    return static_file('index.html', root='/home/pi/base/web')
 
 
 # ------------------------------------------------------------------------------------------
@@ -35,7 +35,7 @@ radio = 1
 
 @route('/playsound/<file>')
 def play_sound(file):
-    filename = "./base/sounds/" + file + ".wav"
+    filename = "/home/pi/base/sounds/" + file + ".wav"
     subprocess.call(["aplay", filename])
     return dict(status="OK")
 

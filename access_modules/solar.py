@@ -5,7 +5,7 @@ from collections import OrderedDict
 from requests.auth import HTTPDigestAuth
 
 cfg = configparser.ConfigParser()
-cfg.read('./base/tools/config.txt')
+cfg.read('/home/pi/base/tools/config.txt')
 
 logger = logging.getLogger("base_logger")
 

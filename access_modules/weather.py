@@ -8,7 +8,7 @@ from tinkerforge.bricklet_humidity import Humidity
 from tinkerforge.bricklet_barometer import Barometer
 
 cfg = configparser.ConfigParser()
-cfg.read('./base/tools/config.txt')
+cfg.read('/home/pi/base/tools/config.txt')
 
 logger = logging.getLogger("base_logger")
 

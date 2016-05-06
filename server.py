@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# coding: utf8
+#!/usr/bin/python3
 import sys
 import logging
 from logging.handlers import RotatingFileHandler
@@ -13,7 +12,7 @@ import subprocess
 # logger configuration
 logger = logging.getLogger("base_logger")
 logger.setLevel(logging.WARN)
-filehandler = RotatingFileHandler('./base/log.txt', maxBytes=100000, backupCount=2)
+filehandler = RotatingFileHandler('/home/pi/base/log.txt', maxBytes=100000, backupCount=2)
 formatter = logging.Formatter('%(asctime)s : %(levelname)s : %(message)s', datefmt='%d-%m-%Y %H:%M:%S')
 filehandler.setFormatter(formatter)
 logger.addHandler(filehandler)
