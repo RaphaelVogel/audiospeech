@@ -6,16 +6,15 @@ import logging
 
 logger = logging.getLogger("base_logger")
 
-
-@route('/')
-def index():
-    return static_file('index.html', root='/home/pi/base/web')
-
-
 # ------------------------------------------------------------------------------------------
 # Sound, Radio and Speech Recognition API
 # ------------------------------------------------------------------------------------------
 radio = 1
+
+
+@route('/')
+def index():
+    return static_file('index.html', root='/home/pi/base/web')
 
 
 @route('/playsound/<file>')
