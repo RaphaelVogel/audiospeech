@@ -4,6 +4,9 @@ import subprocess
 import logging
 
 
+logger = logging.getLogger("base_logger")
+
+
 @route('/')
 def index():
     return static_file('index.html', root='/home/pi/base/web')
@@ -12,7 +15,6 @@ def index():
 # ------------------------------------------------------------------------------------------
 # Sound, Radio and Speech Recognition API
 # ------------------------------------------------------------------------------------------
-logger = logging.getLogger("base_logger")
 radio = 1
 
 
@@ -50,13 +52,6 @@ def increase_volume():
 def decrease_volume():
     subprocess.call(["mpc", "volume", "-10"])
     return dict(status="OK")
-
-
-@route('/recognize')
-def speech_recognizer():
-    logger.info("In speech_recognizer method")
-    stop_radio()
-    return dict(recognized_intent="")
 
 
 # ----------------------------------------------------------------------------------------------
