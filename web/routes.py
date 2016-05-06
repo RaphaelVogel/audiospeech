@@ -40,12 +40,6 @@ def play_sound(file):
     return dict(status="OK")
 
 
-# http://hr-mp3-m-h3.akacast.akamaistream.net/7/785/142133/v1/gnl.akacast.akamaistream.net/hr-mp3-m-h3
-# http://swr-mp3-m-swr3.akacast.akamaistream.net/7/720/137136/v1/gnl.akacast.akamaistream.net/swr-mp3-m-swr3
-# http://swr-mp3-m-swr2.akacast.akamaistream.net/7/721/137135/v1/gnl.akacast.akamaistream.net/swr-mp3-m-swr2
-# http://mp3.ffh.de/radioffh/hqlivestream.mp3
-# http://srv05.bigstreams.de/bigfm-mp3-96
-# http://217.151.151.91:80/live
 @route('/playRadio')
 def play_radio():
     global radio
