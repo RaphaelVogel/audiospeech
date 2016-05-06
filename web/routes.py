@@ -86,4 +86,4 @@ def current_weather():
 def say(text):
     subprocess.call(["amixer", "sset", "PCM,0", "75%"])
     subprocess.call('pico2wave --lang=de-DE --wave=/tmp/test.wav "' + text + '" && aplay /tmp/test.wav && rm /tmp/test.wav', shell=True)
-    subprocess.call(["amixer", "sset", "PCM,0", "50%"])
+    subprocess.call(["amixer", "sset", "PCM,0", "60%"])
