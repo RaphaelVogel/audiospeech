@@ -18,13 +18,7 @@ filehandler.setFormatter(formatter)
 logger.addHandler(filehandler)
 
 
-def reset_mpd():
-    subprocess.call(["sudo", "service", "mpd", "restart"])
-    Timer(9000.0, reset_mpd).start()  # 2,5h
-
-
 if __name__ == '__main__':
-    reset_mpd()
     if len(sys.argv) > 1 and sys.argv[1] == 'devmode':
         run(server='cherrypy', host='localhost', port=8080, debug=True, reloader=True)
     else:
