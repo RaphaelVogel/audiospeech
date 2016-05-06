@@ -2,5 +2,4 @@
 bottle
 cherrypy
 requests
-wit
 tinkerforge

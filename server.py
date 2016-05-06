@@ -3,9 +3,6 @@ import sys
 import logging
 from logging.handlers import RotatingFileHandler
 from bottle import run
-import web.routes
-import time
-from threading import Timer
 import subprocess
 
 
