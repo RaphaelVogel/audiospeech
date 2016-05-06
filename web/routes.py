@@ -18,7 +18,7 @@ def index():
 
 @route('/playsound/<file>')
 def play_sound(file):
-    subprocess.call(["amixer", "sset", "PCM,0", "65%"])
+    stop_radio()
     filename = "/home/pi/base/sounds/" + file + ".wav"
     subprocess.call(["aplay", filename])
     return dict(status="OK")
