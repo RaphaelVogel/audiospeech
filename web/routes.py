@@ -5,13 +5,12 @@ import logging
 
 
 logger = logging.getLogger("base_logger")
+radio = 1
+
 
 # ------------------------------------------------------------------------------------------
 # Sound, Radio and Speech Recognition API
 # ------------------------------------------------------------------------------------------
-radio = 1
-
-
 @route('/')
 def index():
     return static_file('index.html', root='/home/pi/base/web')

@@ -3,8 +3,7 @@ import sys
 import logging
 from logging.handlers import RotatingFileHandler
 from bottle import run
-import subprocess
-
+import web.routes
 
 # logger configuration
 logger = logging.getLogger("base_logger")
