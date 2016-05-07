@@ -34,15 +34,15 @@ def play_radio():
     subprocess.call(["mpc", "toggle"])
     radio += 1
     if "hr3" in out:
-        say("H, R, 3")
+        say("HR 3")
     elif "SWR3" in out:
-        say("S, W, R, 3")
+        say("SWR 3")
     elif "SWR1" in out:
-        say("S, W, R, 1")
+        say("SWR 1")
     elif "SWR2" in out:
-        say("S, W, R, 2")
+        say("SWR 2")
     elif "Bayern 3" in out:
-        say("Bayern, 3")
+        say("Bayern 3")
     elif "DASDING" in out:
         say("Das Ding")
 
