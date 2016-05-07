@@ -29,7 +29,7 @@ def play_radio():
     global radio
     if radio > 6:
         radio = 1
-    out = subprocess.check_output("mpc -q play " + str(radio), shell=True)
+    out = subprocess.check_output("mpc play " + str(radio), shell=True)
     out = out.split(b'\n')[0].decode('utf-8')
     radio += 1
     return dict(playing=out)
