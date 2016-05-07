@@ -31,6 +31,7 @@ def play_radio():
         radio = 1
     out = subprocess.check_output("mpc play " + str(radio), shell=True)
     out = out.split(b'\n')[0].decode('utf-8')
+    subprocess.call(["mpc", "toggle"])
     radio += 1
     if "hr3" in out:
         say("H, R, 3")
@@ -45,6 +46,7 @@ def play_radio():
     elif "DASDING" in out:
         say("Das Ding")
 
+    subprocess.call(["mpc", "toggle"])
     return dict(playing=out)
 
 
