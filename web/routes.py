@@ -2,6 +2,7 @@ from bottle import route, static_file, HTTPResponse
 from access_modules import solar, weather
 import subprocess
 import logging
+import time
 
 
 logger = logging.getLogger("base_logger")
@@ -29,24 +30,24 @@ def play_radio():
     global radio
     if radio > 6:
         radio = 1
-    out = subprocess.check_output("mpc play " + str(radio), shell=True)
-    out = out.split(b'\n')[0].decode('utf-8')
-    subprocess.call(["mpc", "toggle"])
-    radio += 1
-    if "hr3" in out:
+
+    if radio == 1:
         say("HR 3", 65)
-    elif "SWR3" in out:
+    elif radio == 2:
         say("SWR 3", 65)
-    elif "SWR1" in out:
+    elif radio == 3:
         say("SWR 1", 65)
-    elif "SWR2" in out:
+    elif radio == 4:
         say("SWR 2", 65)
-    elif "Bayern 3" in out:
+    elif radio == 5:
         say("Bayern 3", 65)
-    elif "DASDING" in out:
+    elif radio == 6:
         say("Das Ding", 65)
 
-    subprocess.call(["mpc", "toggle"])
+    time.sleep(0.5)
+    out = subprocess.check_output("mpc play " + str(radio), shell=True)
+    out = out.split(b'\n')[0].decode('utf-8')
+    radio += 1
     return dict(playing=out)
 
 
