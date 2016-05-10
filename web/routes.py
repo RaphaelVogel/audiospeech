@@ -33,17 +33,17 @@ def play_radio():
 
     subprocess.call(["mpc", "stop"])
     if radio == 1:
-        say("HR 3", 65)
+        say("HR 3", 70)
     elif radio == 2:
-        say("SWR 3", 65)
+        say("SWR 3", 70)
     elif radio == 3:
-        say("SWR 1", 65)
+        say("SWR 1", 70)
     elif radio == 4:
-        say("SWR 2", 65)
+        say("SWR 2", 70)
     elif radio == 5:
-        say("Bayern 3", 65)
+        say("Bayern 3", 70)
     elif radio == 6:
-        say("Das Ding", 65)
+        say("Das Ding", 70)
 
     time.sleep(0.4)
     out = subprocess.check_output("mpc play " + str(radio), shell=True)
@@ -97,4 +97,4 @@ def current_weather():
 def say(text, volume):
     subprocess.call("amixer sset PCM,0 " + str(volume) + "%", shell=True)
     subprocess.call('pico2wave --lang=de-DE --wave=/tmp/test.wav "' + text + '" && aplay /tmp/test.wav && rm /tmp/test.wav', shell=True)
-    subprocess.call(["amixer", "sset", "PCM,0", "60%"])
+    subprocess.call(["amixer", "sset", "PCM,0", "65%"])
