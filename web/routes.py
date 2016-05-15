@@ -33,17 +33,17 @@ def play_radio():
 
     subprocess.call(["mpc", "stop"])
     if radio == 1:
-        say("HR 3", 70)
+        say("HR 3", 74)
     elif radio == 2:
-        say("SWR 3", 70)
+        say("SWR 3", 74)
     elif radio == 3:
-        say("SWR 1", 70)
+        say("SWR 1", 74)
     elif radio == 4:
-        say("SWR 2", 70)
+        say("SWR 2", 74)
     elif radio == 5:
-        say("Bayern 3", 70)
+        say("Bayern 3", 74)
     elif radio == 6:
-        say("Das Ding", 70)
+        say("Das Ding", 74)
 
     time.sleep(0.4)
     out = subprocess.check_output("mpc play " + str(radio), shell=True)
