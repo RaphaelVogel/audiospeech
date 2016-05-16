@@ -97,7 +97,7 @@ def current_weather():
 def start_timer(minutes):
     say("Alarm in " + minutes + " Minuten", 80)
     minutes = float(minutes) * 60
-    t = Timer(minutes, end_timer).start()
+    Timer(minutes, end_timer).start()
     return dict(alarm=minutes)
 
 
