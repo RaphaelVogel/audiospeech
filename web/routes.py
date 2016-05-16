@@ -94,8 +94,8 @@ def current_weather():
 
 @route('/startTimer/<minutes>')
 def start_timer(minutes):
-    minutes *= 60
     say("Erinnerung in " + minutes + " Minuten", 80)
+    minutes *= 60
     t = Timer(float(minutes), end_timer)
     t.start()
 
@@ -104,7 +104,7 @@ def start_timer(minutes):
 # Functions
 # ----------------------------------------------------------------------------------------------
 def end_timer():
-    say("Zeit ist abgelaufen", 75)
+    say("Zeit ist abgelaufen", 80)
 
 
 def say(text, volume):
