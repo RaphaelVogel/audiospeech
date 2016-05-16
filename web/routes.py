@@ -19,7 +19,7 @@ def index():
 
 
 @route('/playsound/<file>')
-def play_sound(file, volume):
+def play_sound(file, volume=75):
     stop_radio()
     subprocess.call("amixer sset PCM,0 " + str(volume) + "%", shell=True)
     filename = "/home/pi/base/sounds/" + file + ".wav"
@@ -95,7 +95,7 @@ def current_weather():
 
 @route('/startTimer/<minutes>')
 def start_timer(minutes):
-    say("Erinnerung in " + minutes + " Minuten", 80)
+    say("Alarm in " + minutes + " Minuten", 75)
     minutes *= 60
     t = Timer(float(minutes), end_timer)
     t.start()
@@ -105,9 +105,9 @@ def start_timer(minutes):
 # Functions
 # ----------------------------------------------------------------------------------------------
 def end_timer():
-    play_sound("alarm.wav", 80)
+    play_sound("alarm.wav", 75)
     time.sleep(1)
-    say("Zeit ist abgelaufen", 80)
+    say("Zeit ist abgelaufen", 75)
 
 
 def say(text, volume):
