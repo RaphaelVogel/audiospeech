@@ -19,8 +19,9 @@ def index():
 
 
 @route('/playsound/<file>')
-def play_sound(file):
+def play_sound(file, volume):
     stop_radio()
+    subprocess.call("amixer sset PCM,0 " + str(volume) + "%", shell=True)
     filename = "/home/pi/base/sounds/" + file + ".wav"
     subprocess.call(["aplay", filename])
     return dict(status="OK")
@@ -104,6 +105,8 @@ def start_timer(minutes):
 # Functions
 # ----------------------------------------------------------------------------------------------
 def end_timer():
+    play_sound("alarm.wav", 80)
+    time.sleep(1)
     say("Zeit ist abgelaufen", 80)
 
 
