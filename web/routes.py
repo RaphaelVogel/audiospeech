@@ -95,19 +95,19 @@ def current_weather():
 
 @route('/startTimer/<minutes>')
 def start_timer(minutes):
-    say("Alarm in " + minutes + " Minuten", 75)
-    minutes *= 60
-    t = Timer(float(minutes), end_timer)
-    t.start()
+    say("Alarm in " + minutes + " Minuten", 80)
+    minutes = float(minutes) * 60
+    t = Timer(minutes, end_timer).start()
+    return dict(alarm=minutes)
 
 
 # ----------------------------------------------------------------------------------------------
 # Functions
 # ----------------------------------------------------------------------------------------------
 def end_timer():
-    play_sound("alarm.wav", 75)
+    play_sound("alarm", 80)
     time.sleep(1)
-    say("Zeit ist abgelaufen", 75)
+    say("Die Zeit ist abgelaufen", 80)
 
 
 def say(text, volume):
