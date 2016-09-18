@@ -3,7 +3,6 @@ from access_modules import solar, weather
 import subprocess
 import logging
 import time
-from threading import Timer
 
 
 logger = logging.getLogger("base_logger")
@@ -93,23 +92,33 @@ def current_weather():
         return HTTPResponse(dict(error="Could not read weather data values"), status=500)
 
 
-@route('/startTimer/<minutes>')
-def start_timer(minutes):
-    say("Alarm in " + minutes + " Minuten", 80)
-    minutes = float(minutes) * 60
-    Timer(minutes, end_timer).start()
-    return dict(alarm=minutes)
+# ----------------------------------------------------------------------------------------------
+# Alarm control
+# ----------------------------------------------------------------------------------------------
+@route('/alarmOn')
+def alarm_on():
+    subprocess.call(["sudo", "systemctl", "start", "alarm.service"])
+    return dict(status="OK")
+
+
+@route('/alarmOff')
+def alarm_off():
+    subprocess.call(["sudo", "systemctl", "stop", "alarm.service"])
+    return dict(status="OK")
+
+
+@route('/alarmStatus')
+def alarm_status():
+    try:
+        subprocess.check_call(["systemctl", "status", "alarm.service"])
+        return dict(status="started")
+    except subprocess.CalledProcessError:
+        return dict(status="stopped")
 
 
 # ----------------------------------------------------------------------------------------------
 # Functions
 # ----------------------------------------------------------------------------------------------
-def end_timer():
-    play_sound("alarm", 80)
-    time.sleep(1)
-    say("Die Zeit ist abgelaufen", 80)
-
-
 def say(text, volume):
     subprocess.call("amixer sset PCM,0 " + str(volume) + "%", shell=True)
     subprocess.call('pico2wave --lang=de-DE --wave=/tmp/test.wav "' + text + '" && aplay /tmp/test.wav && rm /tmp/test.wav', shell=True)
