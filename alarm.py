@@ -28,18 +28,19 @@ ipcon = IPConnection()
 
 
 def change_detected(port, interrupt_mask, value_mask):
-    if value_mask & 0b00000001:  # north side motion detector is high (open)
-        log.warn("Alarm on north side motion detector")
-    #if value_mask & 0b00000010:  # west side motion detector is high (open)
-    #    log.warn("Alarm on west side motion detector")
-    conn = http.client.HTTPSConnection("api.pushover.net:443")
-    conn.request("POST", "/1/messages.json",
-        urllib.parse.urlencode({
-            "token": cfg['pushover']['token'],
-            "user": cfg['pushover']['user'],
-            "message": "North Side Motion Detected",
-        }), {"Content-type": "application/x-www-form-urlencoded"})
-    conn.getresponse()
+    if (interrupt_mask & 0b00000001) == 1:  # interrupt on pin 0
+        if (value_mask & 0b00000001) == 1:  # pin 0 is high: north side motion detector
+            log.warn("Alarm on north side motion detector")
+    #if (interrupt_mask & 0b00000010) == 2:  # interrupt on pin 1
+    #    if (value_mask & 0b00000010) == 2:  # pin 1 is high: south side motion detector
+            conn = http.client.HTTPSConnection("api.pushover.net:443")
+            conn.request("POST", "/1/messages.json",
+                urllib.parse.urlencode({
+                    "token": cfg['pushover']['token'],
+                    "user": cfg['pushover']['user'],
+                    "message": "North Side Motion Detected",
+                }), {"Content-type": "application/x-www-form-urlencoded"})
+            conn.getresponse()
 
 
 def cb_enumerate(uid, connected_uid, position, hardware_version, firmware_version, device_identifier, enumeration_type):
