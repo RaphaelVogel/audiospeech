@@ -8,3 +8,5 @@ pico2wave.deb
 host
 update.yml
 tools/config.txt
+nginx.pem
+nginx.key
