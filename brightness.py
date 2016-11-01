@@ -1,21 +1,21 @@
 #!/usr/bin/python3
 from tinkerforge.ip_connection import IPConnection
-from tinkerforge.bricklet_io16 import BrickletIO16
+from tinkerforge.bricklet_ambient_light_v2 import BrickletAmbientLightV2
 from tinkerforge.ip_connection import Error
 import logging
 import sys
+import os
 import signal
 import configparser
 from logging.handlers import RotatingFileHandler
 import time
 import socket
-import http.client, urllib
 
 
 # logger configuration
-log = logging.getLogger("alarm_logger")
+log = logging.getLogger("brightness_logger")
 log.setLevel(logging.INFO)
-filehandler = RotatingFileHandler('/home/pi/base/alarm_log.txt', maxBytes=100000, backupCount=2)
+filehandler = RotatingFileHandler('/home/pi/base/brightness_log.txt', maxBytes=10000, backupCount=2)
 formatter = logging.Formatter('%(asctime)s : %(levelname)s : %(message)s', datefmt='%d-%m-%Y %H:%M:%S')
 filehandler.setFormatter(formatter)
 log.addHandler(filehandler)
@@ -25,36 +25,29 @@ cfg.read('/home/pi/base/tools/config.txt')
 
 
 ipcon = IPConnection()
+its_day = "/home/pi/base/tools/its_day"
 
 
-def change_detected(port, interrupt_mask, value_mask):
-    if (interrupt_mask & 0b00000001) == 1:  # interrupt on pin 0
-        if (value_mask & 0b00000001) == 1:  # pin 0 is high: north side motion detector
-            log.warn("Alarm on north side motion detector")
-    if (interrupt_mask & 0b00000010) == 2:  # interrupt on pin 1
-        if (value_mask & 0b00000010) == 2:  # pin 1 is high: west side motion detector
-            log.warn("Alarm on west side motion detector")
-#            conn = http.client.HTTPSConnection("api.pushover.net:443")
-#            conn.request("POST", "/1/messages.json",
-#                urllib.parse.urlencode({
-#                    "token": cfg['pushover']['token'],
-#                    "user": cfg['pushover']['user'],
-#                    "message": "Bewegungsmelder WEST",
-#                }), {"Content-type": "application/x-www-form-urlencoded"})
-#            conn.getresponse()
+def brightness_callback(brighness):
+    if (brighness / 100.0) > 80.0:  # 80 Lux
+        # day
+        if not os.path.exists(its_day):
+            open(its_day, 'w').close()
+    else:
+        # night
+        if os.path.exists(its_day):
+            os.remove(its_day)
 
 
 def cb_enumerate(uid, connected_uid, position, hardware_version, firmware_version, device_identifier, enumeration_type):
     if enumeration_type == IPConnection.ENUMERATION_TYPE_CONNECTED or enumeration_type == IPConnection.ENUMERATION_TYPE_AVAILABLE:
-        if device_identifier == BrickletIO16.DEVICE_IDENTIFIER:
+        if device_identifier == BrickletAmbientLightV2.DEVICE_IDENTIFIER:
             try:
-                io16 = BrickletIO16('b7Y', ipcon)
-                io16.set_debounce_period(5000)
-                io16.set_port_configuration('a', 0b11111111, 'i', True)
-                io16.set_port_interrupt('a', 0b00000011)
-                io16.register_callback(BrickletIO16.CALLBACK_INTERRUPT, change_detected)
+                al = BrickletAmbientLightV2('xxxxxxxxxx', ipcon)
+                al.register_callback(al.CALLBACK_ILLUMINANCE, brightness_callback)
+                al.set_illuminance_callback_period(300000)  # 5 min
             except Error as e:
-                log.error('IO16 init failed: ' + str(e.description))
+                log.error('Ambient Light Bricklet init failed: ' + str(e.description))
 
 
 def cb_connected(connected_reason):
@@ -69,7 +62,7 @@ def cb_connected(connected_reason):
                 time.sleep(1)
 
 
-def start_alarm_check():
+def start_brightness_check():
     while True:
         try:
             ipcon.connect(cfg['weather']['host'], int(cfg['weather']['port']))
@@ -87,7 +80,7 @@ def start_alarm_check():
     while True:
         try:
             ipcon.enumerate()
-            log.info("Alarm Service started")
+            log.info("Brightness Service started")
             break
         except Error as e:
             log.error('Enumerate Error: ' + str(e.description))
@@ -95,14 +88,14 @@ def start_alarm_check():
 
 
 def signal_handler(signal_type, frame):
-    log.info("Alarm Service stopped")
+    log.info("Brightness Service stopped")
     ipcon.disconnect()
     sys.exit(0)
 
 
 if __name__ == "__main__":
     signal.signal(signal.SIGTERM, signal_handler)
-    start_alarm_check()
+    start_brightness_check()
     while True:
         time.sleep(1)
 

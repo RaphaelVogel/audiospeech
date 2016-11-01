@@ -8,5 +8,7 @@ pico2wave.deb
 host
 update.yml
 tools/config.txt
+tools/its_day
 nginx.pem
 nginx.key
+
