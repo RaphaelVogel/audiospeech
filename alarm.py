@@ -15,7 +15,7 @@ import http.client, urllib
 # logger configuration
 log = logging.getLogger("alarm_logger")
 log.setLevel(logging.INFO)
-filehandler = RotatingFileHandler('/home/pi/base/alarm_log.txt', maxBytes=100000, backupCount=2)
+filehandler = RotatingFileHandler('/home/pi/base/logs/alarm_log.txt', maxBytes=100000, backupCount=2)
 formatter = logging.Formatter('%(asctime)s : %(levelname)s : %(message)s', datefmt='%d-%m-%Y %H:%M:%S')
 filehandler.setFormatter(formatter)
 log.addHandler(filehandler)

@@ -8,28 +8,15 @@ cfg = configparser.ConfigParser()
 cfg.read('/home/pi/base/tools/config.txt')
 
 logger = logging.getLogger("base_logger")
-
 solar_data = OrderedDict()
-solar_data['current'] = '5.49'
-solar_data['current_unit'] = 'kW'
-solar_data['day'] = '7.05'
-solar_data['day_unit'] = 'kWh'
-solar_data['month'] = '34.54'
-solar_data['month_unit'] = 'kWh'
-solar_data['year'] = '10.27'
-solar_data['year_unit'] = 'MWh'
-solar_data['total'] = '41.65'
-solar_data['total_unit'] = 'MWh'
 
 
-def read_data(fake=None):
-    if fake:
-        return solar_data
+def read_data():
     try:
         resp = requests.get(cfg['solar']['url'], headers={'Accept': '*/*'},
                             auth=HTTPDigestAuth(cfg['solar']['user'], cfg['solar']['password']), timeout=2.5)
     except Exception as e:
-        logger.debug('Could not read data from solar inverter: %s' % str(e))
+        logger.info('Could not read data from solar inverter: %s' % str(e))
         return
 
     logger.debug('Response from solar inverter %s' % resp.text)

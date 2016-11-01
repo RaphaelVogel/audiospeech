@@ -5,18 +5,26 @@ from logging.handlers import RotatingFileHandler
 from bottle import run
 import web.routes
 import subprocess
+import signal
 
 # logger configuration
 logger = logging.getLogger("base_logger")
-logger.setLevel(logging.WARN)
-filehandler = RotatingFileHandler('/home/pi/base/base_log.txt', maxBytes=100000, backupCount=2)
+logger.setLevel(logging.INFO)
+filehandler = RotatingFileHandler('/home/pi/base/logs/base_log.txt', maxBytes=100000, backupCount=2)
 formatter = logging.Formatter('%(asctime)s : %(levelname)s : %(message)s', datefmt='%d-%m-%Y %H:%M:%S')
 filehandler.setFormatter(formatter)
 logger.addHandler(filehandler)
 
 
+def signal_handler(signal_type, frame):
+    logger.info("Base Webserver stopped")
+    sys.exit(0)
+
+
 if __name__ == '__main__':
+    signal.signal(signal.SIGTERM, signal_handler)
     subprocess.call(["amixer", "sset", "PCM,0", "60%"])
+    logger.info("Base Webserver started")
     if len(sys.argv) > 1 and sys.argv[1] == 'devmode':
         run(server='cherrypy', host='localhost', port=8080, debug=True, reloader=True)
     else:

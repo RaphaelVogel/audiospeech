@@ -11,20 +11,10 @@ cfg = configparser.ConfigParser()
 cfg.read('/home/pi/base/tools/config.txt')
 
 logger = logging.getLogger("base_logger")
-
 weather_data = OrderedDict()
-weather_data['temperature'] = '16.9'
-weather_data['temperature_unit'] = 'Grad'
-weather_data['humidity'] = '73.8'
-weather_data['humidity_unit'] = '%RH'
-weather_data['pressure'] = '1013.6'
-weather_data['pressure_unit'] = 'mbar'
 
 
-def read_data(fake=None):
-    if fake:
-        return weather_data
-
+def read_data():
     try:
         ipcon = IPConnection()
         temp_bricklet = Temperature('qnk', ipcon)
