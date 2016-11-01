@@ -1,8 +1,9 @@
 from bottle import route, static_file, HTTPResponse
-from access_modules import solar, weather
+from access_modules import solar, weather, pushover
 import subprocess
 import logging
 import time
+import urllib
 
 
 logger = logging.getLogger("base_logger")
@@ -114,6 +115,19 @@ def alarm_status():
         return dict(status="started")
     except subprocess.CalledProcessError:
         return dict(status="stopped")
+
+
+# ----------------------------------------------------------------------------------------------
+# Pushover API
+# ----------------------------------------------------------------------------------------------
+@route('/pushOver/<message_type>/<message>')
+def send_pushover_message(message_type, message):
+    message = urllib.parse.unquote_plus(message)
+    ret_value = pushover.send_message(message_type, message)  # returns a dictionary, will be transformed to JSON by bottle
+    if ret_value:
+        return ret_value
+    else:
+        return HTTPResponse(dict(error="Could not send pushover message"), status=500)
 
 
 # ----------------------------------------------------------------------------------------------
