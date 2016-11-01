@@ -9,7 +9,8 @@ import configparser
 from logging.handlers import RotatingFileHandler
 import time
 import socket
-import http.client, urllib
+import requests
+import urllib
 
 
 # logger configuration
@@ -31,9 +32,14 @@ def change_detected(port, interrupt_mask, value_mask):
     if (interrupt_mask & 0b00000001) == 1:  # interrupt on pin 0
         if (value_mask & 0b00000001) == 1:  # pin 0 is high: north side motion detector
             log.warn("Alarm on north side motion detector")
+            message = urllib.parse.quote_plus("Bewegungsmelder Nord (Terasse)")
+            requests.get("http://localhost:8080/pushOver/alarm/" + message)
+
     if (interrupt_mask & 0b00000010) == 2:  # interrupt on pin 1
         if (value_mask & 0b00000010) == 2:  # pin 1 is high: west side motion detector
             log.warn("Alarm on west side motion detector")
+            message = urllib.parse.quote_plus("Bewegungsmelder West (Gartenhaus)")
+            requests.get("http://localhost:8080/pushOver/alarm/" + message)
 
 
 def cb_enumerate(uid, connected_uid, position, hardware_version, firmware_version, device_identifier, enumeration_type):
