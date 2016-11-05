@@ -11,4 +11,4 @@ tools/config.txt
 tools/its_day
 nginx.pem
 nginx.key
-
+homematic/*

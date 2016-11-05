@@ -4,7 +4,11 @@ import subprocess
 import logging
 import time
 import urllib
+import requests
+import configparser
 
+cfg = configparser.ConfigParser()
+cfg.read('/home/pi/base/tools/config.txt')
 
 logger = logging.getLogger("base_logger")
 radio = 1
@@ -19,7 +23,7 @@ def index():
 
 
 @route('/playsound/<file>')
-def play_sound(file, volume=75):
+def play_sound(file, volume=80):
     stop_radio()
     subprocess.call("amixer sset PCM,0 " + str(volume) + "%", shell=True)
     filename = "/home/pi/base/sounds/" + file + ".wav"
@@ -99,12 +103,16 @@ def current_weather():
 @route('/alarmOn')
 def alarm_on():
     subprocess.call(["sudo", "systemctl", "start", "alarm.service"])
+    # update the E Paper alarm display
+    requests.get(cfg['ccu2']['update_alarm_on'])
     return dict(status="OK")
 
 
 @route('/alarmOff')
 def alarm_off():
     subprocess.call(["sudo", "systemctl", "stop", "alarm.service"])
+    # update the E Paper alarm display
+    requests.get(cfg['ccu2']['update_alarm_off'])
     return dict(status="OK")
 
 

@@ -32,13 +32,15 @@ def change_detected(port, interrupt_mask, value_mask):
     if interrupt_mask & 0b00000001:     # interrupt on pin 0
         if value_mask & 0b00000001:     # pin 0 is high: north side motion detector
             log.warn("Alarm on north side motion detector")
-            message = urllib.parse.quote_plus("Bewegungsmelder Nord (Terasse)")
+            message = urllib.parse.quote_plus("Bewegungsmelder Nord - Terasse")
             requests.get("http://localhost:8080/pushOver/alarm/" + message)
+            requests.get(cfg['dashboard']['url'] + "/alarmMessage/Bewegungsmelder/Terasse")
+            requests.get("http://localhost:8080/playsound/alarm")
 
     if interrupt_mask & 0b00000010:     # interrupt on pin 1
         if value_mask & 0b00000010:     # pin 1 is high: west side motion detector
             log.warn("Alarm on west side motion detector")
-            message = urllib.parse.quote_plus("Bewegungsmelder West (Gartenhaus)")
+            message = urllib.parse.quote_plus("Bewegungsmelder West - Gartenhaus")
             requests.get("http://localhost:8080/pushOver/alarm/" + message)
 
 
@@ -86,6 +88,8 @@ def start_alarm_check():
         try:
             ipcon.enumerate()
             log.info("Alarm Service started")
+            # update the E Paper alarm display
+            requests.get(cfg['ccu2']['update_alarm_on'])
             break
         except Error as e:
             log.error('Enumerate Error: ' + str(e.description))
@@ -94,6 +98,8 @@ def start_alarm_check():
 
 def signal_handler(signal_type, frame):
     log.info("Alarm Service stopped")
+    # update the E Paper alarm display
+    requests.get(cfg['ccu2']['update_alarm_off'])
     ipcon.disconnect()
     sys.exit(0)
 
