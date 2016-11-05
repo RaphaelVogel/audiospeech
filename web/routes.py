@@ -104,7 +104,10 @@ def current_weather():
 def alarm_on():
     subprocess.call(["sudo", "systemctl", "start", "alarm.service"])
     # update the E Paper alarm display
-    requests.get(cfg['ccu2']['update_alarm_on'])
+    try:
+        requests.get(cfg['ccu2']['update_alarm_on'], timeout=3)
+    except Exception:
+        pass
     return dict(status="OK")
 
 
@@ -112,7 +115,10 @@ def alarm_on():
 def alarm_off():
     subprocess.call(["sudo", "systemctl", "stop", "alarm.service"])
     # update the E Paper alarm display
-    requests.get(cfg['ccu2']['update_alarm_off'])
+    try:
+        requests.get(cfg['ccu2']['update_alarm_off'], timeout=3)
+    except Exception:
+        pass
     return dict(status="OK")
 
 

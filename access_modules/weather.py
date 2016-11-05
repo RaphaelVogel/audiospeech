@@ -1,4 +1,3 @@
-import requests
 import logging, configparser
 from collections import OrderedDict
 

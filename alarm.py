@@ -28,20 +28,34 @@ cfg.read('/home/pi/base/tools/config.txt')
 ipcon = IPConnection()
 
 
+def alarm_messaging(alarm_type, alarm_location):
+    message = urllib.parse.quote_plus(alarm_type + " - " + alarm_location)
+    try:
+        # Pushover message
+        requests.get("http://localhost:8080/pushOver/alarm/" + message, timeout=3)
+    except Exception:
+        pass
+    try:
+        # Dashboard
+        requests.get(cfg['dashboard']['url'] + "/alarmMessage/" + alarm_type + "/" + alarm_location, timeout=3)
+    except Exception:
+        pass
+    try:
+        # Play alarm sound
+        requests.get("http://localhost:8080/playsound/alarm", timeout=3)
+    except Exception:
+        pass
+
+
 def change_detected(port, interrupt_mask, value_mask):
     if interrupt_mask & 0b00000001:     # interrupt on pin 0
         if value_mask & 0b00000001:     # pin 0 is high: north side motion detector
-            log.warn("Alarm on north side motion detector")
-            message = urllib.parse.quote_plus("Bewegungsmelder Nord - Terasse")
-            requests.get("http://localhost:8080/pushOver/alarm/" + message)
-            requests.get(cfg['dashboard']['url'] + "/alarmMessage/Bewegungsmelder/Terasse")
-            requests.get("http://localhost:8080/playsound/alarm")
+            log.warn("Alarm Bewegungsmelder - Terasse")
+            alarm_messaging("Bewegungsmelder", "Terasse")
 
     if interrupt_mask & 0b00000010:     # interrupt on pin 1
         if value_mask & 0b00000010:     # pin 1 is high: west side motion detector
-            log.warn("Alarm on west side motion detector")
-            message = urllib.parse.quote_plus("Bewegungsmelder West - Gartenhaus")
-            requests.get("http://localhost:8080/pushOver/alarm/" + message)
+            log.warn("Alarm Bewegungsmelder - Gartenhaus")
 
 
 def cb_enumerate(uid, connected_uid, position, hardware_version, firmware_version, device_identifier, enumeration_type):
@@ -89,7 +103,10 @@ def start_alarm_check():
             ipcon.enumerate()
             log.info("Alarm Service started")
             # update the E Paper alarm display
-            requests.get(cfg['ccu2']['update_alarm_on'])
+            try:
+                requests.get(cfg['ccu2']['update_alarm_on'], timeout=3)
+            except Exception:
+                pass
             break
         except Error as e:
             log.error('Enumerate Error: ' + str(e.description))
@@ -99,8 +116,11 @@ def start_alarm_check():
 def signal_handler(signal_type, frame):
     log.info("Alarm Service stopped")
     # update the E Paper alarm display
-    requests.get(cfg['ccu2']['update_alarm_off'])
     ipcon.disconnect()
+    try:
+        requests.get(cfg['ccu2']['update_alarm_off'], timeout=3)
+    except Exception:
+        sys.exit(1)
     sys.exit(0)
 
 

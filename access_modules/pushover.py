@@ -17,7 +17,7 @@ def send_message(message_type, message):
             "user": cfg['pushover']['user'],
             "message": message
         }
-        r = requests.post("https://api.pushover.net/1/messages.json", data=payload)
+        r = requests.post("https://api.pushover.net/1/messages.json", data=payload, timeout=5)
         if not r.status_code == requests.codes.ok:
             return
 
