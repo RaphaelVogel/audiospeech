@@ -58,6 +58,7 @@ def change_detected(port, interrupt_mask, value_mask):
     if interrupt_mask & 0b00000010:     # interrupt on pin 1
         if value_mask & 0b00000010:     # pin 1 is high: west side motion detector
             log.warn("Alarm Bewegungsmelder - Gartenhaus")
+            alarm_messaging("Bewegungsmelder", "Gartenhaus")
 
 
 def cb_enumerate(uid, connected_uid, position, hardware_version, firmware_version, device_identifier, enumeration_type):
