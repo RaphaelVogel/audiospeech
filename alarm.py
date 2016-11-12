@@ -28,8 +28,10 @@ cfg.read('/home/pi/base/tools/config.txt')
 ipcon = IPConnection()
 
 
-def alarm_messaging(alarm_type, alarm_location):
-    message = urllib.parse.quote_plus(alarm_type + " - " + alarm_location)
+# sensor_type = e.g. Bewegungsmelder
+# alarm_location = e.g. Terasse | Gartenhaus
+def alarm_messaging(sensor_type, alarm_location):
+    message = urllib.parse.quote_plus(sensor_type + " - " + alarm_location)
     try:
         # Pushover message
         requests.get("http://localhost:8080/pushOver/alarm/" + message, timeout=3)
@@ -37,7 +39,7 @@ def alarm_messaging(alarm_type, alarm_location):
         pass
     try:
         # Dashboard
-        requests.get(cfg['dashboard']['url'] + "/alarmMessage/" + alarm_type + "/" + alarm_location, timeout=3)
+        requests.get(cfg['dashboard']['url'] + "/alarmMessage/" + sensor_type + "/" + alarm_location, timeout=3)
     except Exception:
         pass
     try:

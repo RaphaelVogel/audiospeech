@@ -134,7 +134,7 @@ def alarm_status():
 # ----------------------------------------------------------------------------------------------
 # Pushover API
 # ----------------------------------------------------------------------------------------------
-@route('/pushOver/<message_type>/<message>')  # alarm or standard
+@route('/pushOver/<message_type>/<message>')  # message_type = alarm | standard
 def send_pushover_message(message_type, message):
     message = urllib.parse.unquote_plus(message)
     ret_value = pushover.send_message(message_type, message)  # returns a dictionary, will be transformed to JSON by bottle

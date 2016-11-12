@@ -7,6 +7,8 @@ cfg.read('/home/pi/base/tools/config.txt')
 logger = logging.getLogger("base_logger")
 
 
+# message_type = alarm | standard
+# message = unquoted message string
 def send_message(message_type, message):
     try:
         if len(message) > 1024:
@@ -17,6 +19,7 @@ def send_message(message_type, message):
             "user": cfg['pushover']['user'],
             "message": message
         }
+        # requests.post() will quote message automatically
         r = requests.post("https://api.pushover.net/1/messages.json", data=payload, timeout=5)
         if not r.status_code == requests.codes.ok:
             return
