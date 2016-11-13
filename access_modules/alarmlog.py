@@ -9,6 +9,8 @@ def get_log():
         out = subprocess.check_output("tail -n 20 /home/pi/base/logs/alarm_log.txt", shell=True)
         # convert from bytestring to UTF-8 string
         out = str(out, encoding='UTF-8')
+        # convert string to list
+        out = out.split('\n')
         return {'alarm_logs': out}
 
     except Exception as e:
