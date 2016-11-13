@@ -1,5 +1,5 @@
 from bottle import route, static_file, HTTPResponse
-from access_modules import solar, weather, pushover
+from access_modules import solar, weather, pushover, alarmlog
 import subprocess
 import logging
 import time
@@ -125,10 +125,19 @@ def alarm_off():
 @route('/alarmStatus')
 def alarm_status():
     try:
-        subprocess.check_call(["systemctl", "status", "alarm.service"])
+        subprocess.check_call(["systemctl", "status", "alarm.service"])  # if $? is != 0 raises CalledProcessError
         return dict(status="started")
     except subprocess.CalledProcessError:
         return dict(status="stopped")
+
+
+@route('/alarmLog')
+def alarm_log():
+    log_data = alarmlog.get_log()
+    if log_data:
+        return log_data
+    else:
+        return HTTPResponse(dict(error="Could not read log data from alarm service"), status=500)
 
 
 # ----------------------------------------------------------------------------------------------
