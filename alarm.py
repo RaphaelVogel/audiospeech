@@ -71,18 +71,18 @@ def cb_enumerate(uid, connected_uid, position, hardware_version, firmware_versio
                 io16.set_port_interrupt('a', 0b00000011)
                 io16.register_callback(BrickletIO16.CALLBACK_INTERRUPT, change_detected)
             except Error as e:
-                log.error('IO16 init failed: ' + str(e.description))
+                log.error('IO16 Initialisierung fehlgeschlagen: ' + str(e.description))
 
 
 def cb_connected(connected_reason):
     if connected_reason == IPConnection.CONNECT_REASON_AUTO_RECONNECT:
-        log.info('Auto Reconnect triggered')
+        log.info('Auto Reconnect ausgeführt')
         while True:
             try:
                 ipcon.enumerate()
                 break
             except Error as e:
-                log.error('Enumerate Error: ' + str(e.description))
+                log.error('Enumerate Fehler: ' + str(e.description))
                 time.sleep(1)
 
 
@@ -92,10 +92,10 @@ def start_alarm_check():
             ipcon.connect(cfg['weather']['host'], int(cfg['weather']['port']))
             break
         except Error as e:
-            log.error('Connection Error: ' + str(e.description))
+            log.error('Verbindungsfehler: ' + str(e.description))
             time.sleep(1)
         except socket.error as e:
-            log.error('Socket error: ' + str(e))
+            log.error('Socket Fehler: ' + str(e))
             time.sleep(1)
 
     ipcon.register_callback(IPConnection.CALLBACK_ENUMERATE, cb_enumerate)
@@ -104,7 +104,7 @@ def start_alarm_check():
     while True:
         try:
             ipcon.enumerate()
-            log.info("Alarm Service started")
+            log.info("Alarmanlage gestartet")
             # update the E Paper alarm display
             try:
                 requests.get(cfg['ccu2']['update_alarm_on'], timeout=3)
@@ -112,12 +112,12 @@ def start_alarm_check():
                 pass
             break
         except Error as e:
-            log.error('Enumerate Error: ' + str(e.description))
+            log.error('Enumerate Fehler: ' + str(e.description))
             time.sleep(1)
 
 
 def signal_handler(signal_type, frame):
-    log.info("Alarm Service stopped")
+    log.info("Alarmanlage gestoppt")
     # update the E Paper alarm display
     ipcon.disconnect()
     try:

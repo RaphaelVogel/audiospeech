@@ -126,9 +126,9 @@ def alarm_off():
 def alarm_status():
     try:
         subprocess.check_call(["systemctl", "status", "alarm.service"])  # if $? is != 0 raises CalledProcessError
-        return dict(status="started")
+        return dict(status="an")
     except subprocess.CalledProcessError:
-        return dict(status="stopped")
+        return dict(status="aus")
 
 
 @route('/alarmLog')
