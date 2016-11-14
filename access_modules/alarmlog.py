@@ -6,7 +6,7 @@ logger = logging.getLogger("base_logger")
 
 def get_log():
     try:
-        out = subprocess.check_output("tail -n 20 /home/pi/base/logs/alarm_log.txt", shell=True)
+        out = subprocess.check_output("tail -n 18 /home/pi/base/logs/alarm_log.txt", shell=True)
         # convert from bytestring to UTF-8 string
         out = str(out, encoding='UTF-8')
         # convert string to list
