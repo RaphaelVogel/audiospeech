@@ -2,7 +2,6 @@ from bottle import route, static_file, HTTPResponse
 from access_modules import solar, weather, pushover, alarmlog
 import subprocess
 import logging
-import time
 import urllib
 import requests
 import configparser
@@ -11,69 +10,11 @@ cfg = configparser.ConfigParser()
 cfg.read('/home/pi/base/tools/config.txt')
 
 logger = logging.getLogger("base_logger")
-radio = 1
 
 
-# ------------------------------------------------------------------------------------------
-# Sound, Radio API
-# ------------------------------------------------------------------------------------------
 @route('/')
 def index():
     return static_file('index.html', root='/home/pi/base/web')
-
-
-@route('/playsound/<file>')
-def play_sound(file, volume=80):
-    stop_radio()
-    subprocess.call("amixer sset PCM,0 " + str(volume) + "%", shell=True)
-    filename = "/home/pi/base/sounds/" + file + ".wav"
-    subprocess.call(["aplay", filename])
-    return dict(status="OK")
-
-
-@route('/playRadio')
-def play_radio():
-    global radio
-    if radio > 6:
-        radio = 1
-
-    subprocess.call(["mpc", "stop"])
-    if radio == 1:
-        say("HR 3", 75)
-    elif radio == 2:
-        say("SWR 3", 75)
-    elif radio == 3:
-        say("SWR 1", 75)
-    elif radio == 4:
-        say("SWR 2", 75)
-    elif radio == 5:
-        say("Bayern 3", 75)
-    elif radio == 6:
-        say("Das Ding", 75)
-
-    time.sleep(0.4)
-    out = subprocess.check_output("mpc play " + str(radio), shell=True)
-    out = out.split(b'\n')[0].decode('utf-8')
-    radio += 1
-    return dict(playing=out)
-
-
-@route('/stopRadio')
-def stop_radio():
-    subprocess.call(["mpc", "stop"])
-    return dict(status="OK")
-
-
-@route('/increaseVolume')
-def increase_volume():
-    subprocess.call(["mpc", "volume", "+10"])
-    return dict(status="OK")
-
-
-@route('/decreaseVolume')
-def decrease_volume():
-    subprocess.call(["mpc", "volume", "-10"])
-    return dict(status="OK")
 
 
 # ----------------------------------------------------------------------------------------------
@@ -151,12 +92,3 @@ def send_pushover_message(message_type, message):
         return ret_value
     else:
         return HTTPResponse(dict(error="Could not send pushover message"), status=500)
-
-
-# ----------------------------------------------------------------------------------------------
-# Functions
-# ----------------------------------------------------------------------------------------------
-def say(text, volume):
-    subprocess.call("amixer sset PCM,0 " + str(volume) + "%", shell=True)
-    subprocess.call('pico2wave --lang=de-DE --wave=/tmp/test.wav "' + text + '" && aplay /tmp/test.wav && rm /tmp/test.wav', shell=True)
-    subprocess.call(["amixer", "sset", "PCM,0", "65%"])

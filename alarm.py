@@ -44,7 +44,8 @@ def alarm_messaging(sensor_type, alarm_location):
         pass
     try:
         # Play alarm sound
-        requests.get("http://localhost:8080/playsound/alarm", timeout=3)
+        pass
+        #requests.get("http://localhost:8080/playsound/alarm", timeout=3)
     except Exception:
         pass
 
