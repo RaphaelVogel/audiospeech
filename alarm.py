@@ -42,12 +42,6 @@ def alarm_messaging(sensor_type, alarm_location):
         requests.get(cfg['dashboard']['url'] + "/alarmMessage/" + sensor_type + "/" + alarm_location, timeout=3)
     except Exception:
         pass
-    try:
-        # Play alarm sound
-        pass
-        #requests.get("http://localhost:8080/playsound/alarm", timeout=3)
-    except Exception:
-        pass
 
 
 def change_detected(port, interrupt_mask, value_mask):

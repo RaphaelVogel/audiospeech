@@ -23,7 +23,6 @@ def signal_handler(signal_type, frame):
 
 if __name__ == '__main__':
     signal.signal(signal.SIGTERM, signal_handler)
-    subprocess.call(["amixer", "sset", "PCM,0", "60%"])
     logger.info("Base Webserver started")
     if len(sys.argv) > 1 and sys.argv[1] == 'devmode':
         run(server='cherrypy', host='localhost', port=8080, debug=True, reloader=True)
