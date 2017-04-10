@@ -11,3 +11,4 @@ tools/its_day
 nginx.pem
 nginx.key
 homematic/*
+logs/*.txt
