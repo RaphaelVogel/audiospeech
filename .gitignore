@@ -4,7 +4,6 @@ pip-log.txt
 __init__.pyc
 *.pyc
 log.txt
-pico2wave.deb
 host
 update.yml
 tools/config.txt
