@@ -39,6 +39,7 @@ def alarm_messaging(sensor_type, alarm_location):
         pass
     try:
         # Dashboard
+        pass
         # requests.get(cfg['dashboard']['url'] + "/alarmMessage/" + sensor_type + "/" + alarm_location, timeout=3)
     except Exception:
         pass
