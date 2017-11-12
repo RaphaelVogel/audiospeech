@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/home/pi/base/bin
 import sys
 import logging
 from logging.handlers import RotatingFileHandler
