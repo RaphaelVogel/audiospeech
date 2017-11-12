@@ -12,3 +12,9 @@ nginx.pem
 nginx.key
 homematic/*
 logs/*.txt
+
+# virtualenv
+bin/
+include/
+lib/
+pip-selfcheck.json
