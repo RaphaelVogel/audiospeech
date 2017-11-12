@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/home/pi/base/bin
 from tinkerforge.ip_connection import IPConnection
 from tinkerforge.bricklet_io16 import BrickletIO16
 from tinkerforge.ip_connection import Error
