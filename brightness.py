@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/home/pi/base/bin
 from tinkerforge.ip_connection import IPConnection
 from tinkerforge.bricklet_ambient_light_v2 import BrickletAmbientLightV2
 from tinkerforge.ip_connection import Error
