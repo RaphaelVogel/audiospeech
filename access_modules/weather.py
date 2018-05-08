@@ -4,7 +4,6 @@ from collections import OrderedDict
 from tinkerforge.ip_connection import IPConnection
 from tinkerforge.bricklet_temperature import Temperature
 from tinkerforge.bricklet_humidity import Humidity
-from tinkerforge.bricklet_barometer import Barometer
 
 cfg = configparser.ConfigParser()
 cfg.read('/home/pi/base/tools/config.txt')
@@ -18,7 +17,6 @@ def read_data():
         ipcon = IPConnection()
         temp_bricklet = Temperature('qnk', ipcon)
         humidity_bricklet = Humidity('nLC', ipcon)
-        barometer_bricklet = Barometer('k5g', ipcon)
         ipcon.connect(cfg['weather']['host'], int(cfg['weather']['port']))
         temp_bricklet.set_i2c_mode(Temperature.I2C_MODE_SLOW)
 
@@ -35,13 +33,6 @@ def read_data():
             logger.warn('Got humidity value of %s RH which is out of range' % humidity)
         else:
             weather_data['humidity'] = humidity
-
-        pressure = barometer_bricklet.get_air_pressure() / 1000.0
-        if 1090 < pressure < 920:
-            weather_data['pressure'] = None
-            logger.warn('Got pressure value of %s mbar which is out of range' % pressure)
-        else:
-            weather_data['pressure'] = pressure
 
         ipcon.disconnect()
         return weather_data
